@@ -1,0 +1,74 @@
+Corrupted file
+Forensics
+Easy
+by Yahaya Meddy
+·
+picoMini by CMU-Africa
+This file seems broken... or is it? Maybe a couple of bytes could make all the difference. Can you figure out how to bring it back to life? Download the file here
+.
+
+Solution:
+
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Corrupted file]
+└─$ hexdump -C file | head
+00000000  5c 78 ff e0 00 10 4a 46  49 46 00 01 01 00 00 01  |\x....JFIF......|
+00000010  00 01 00 00 ff db 00 43  00 08 06 06 07 06 05 08  |.......C........|
+00000020  07 07 07 09 09 08 0a 0c  14 0d 0c 0b 0b 0c 19 12  |................|
+00000030  13 0f 14 1d 1a 1f 1e 1d  1a 1c 1c 20 24 2e 27 20  |........... $.' |
+00000040  22 2c 23 1c 1c 28 37 29  2c 30 31 34 34 34 1f 27  |",#..(7),01444.'|
+00000050  39 3d 38 32 3c 2e 33 34  32 ff db 00 43 01 09 09  |9=82<.342...C...|
+00000060  09 0c 0b 0c 18 0d 0d 18  32 21 1c 21 32 32 32 32  |........2!.!2222|
+00000070  32 32 32 32 32 32 32 32  32 32 32 32 32 32 32 32  |2222222222222222|
+*
+00000090  32 32 32 32 32 32 32 32  32 32 32 32 32 32 ff c0  |22222222222222..|
+                  
+
+A valid JPEG normally starts with:
+FF D8 FF E0 00 10 4A 46 49 46
+
+Your file starts with:
+5C 78 FF E0 00 10 4A 46 49 46
+
+So the first two bytes are wrong:
+5C 78
+
+They should most likely be:
+FF D8
+
+# Confirm the file type                                                                                            
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Corrupted file]
+└─$ file file    
+file: data
+                                                                                                                                                                                 
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Corrupted file]
+└─$ xxd -l 16 file
+00000000: 5c78 ffe0 0010 4a46 4946 0001 0100 0001  \x....JFIF......
+       
+# Repair the JPEG header
+# Make copy first                                                                                                 
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Corrupted file]
+└─$ cp file repaired.jpg
+
+# Replacing the first two bytes with FF D8                                                                                                
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Corrupted file]
+└─$ printf '\xff\xd8' | dd of=repaired.jpg bs=1 count=2 conv=notrunc
+2+0 records in
+2+0 records out
+2 bytes copied, 7.1022e-05 s, 28.2 kB/s
+      
+# Check it                                                                                               
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Corrupted file]
+└─$ xxd -l 16 repaired.jpg
+00000000: ffd8 ffe0 0010 4a46 4946 0001 0100 0001  ......JFIF......
+
+# Verify the JPEG                                                                                                                
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Corrupted file]
+└─$ file repaired.jpg
+repaired.jpg: JPEG image data, JFIF standard 1.01, aspect ratio, density 1x1, segment length 16, baseline, precision 8, 800x500, components 3
+
+# Now open the Image aand you will get the flag
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Corrupted file]
+└─$ xdg-open repaired.jpg 
+                             
+Flag:
+academy{r3st0r1ng_th3_by73s_3908f978}

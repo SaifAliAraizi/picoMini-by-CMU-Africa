@@ -1,0 +1,77 @@
+Hidden in plainsight
+Forensics
+Easy
+by Yahaya Meddy
+·
+picoMini by CMU-Africa
+You’re given a seemingly ordinary JPG image. Something is tucked away out of sight inside the file. Your task is to discover the hidden payload and extract the flag. Download the jpg image here
+.
+
+Solution:
+
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Hidden in plainsight]
+└─$ ls
+img.jpg  solution.txt
+                                                                                                                                                                                 
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Hidden in plainsight]
+└─$ exiftool img.jpg                                                                                             
+ExifTool Version Number         : 12.76
+File Name                       : img.jpg
+Directory                       : .
+File Size                       : 73 kB
+File Modification Date/Time     : 2026:09:29 01:34:51-04:00
+File Access Date/Time           : 2026:09:29 01:35:24-04:00
+File Inode Change Date/Time     : 2026:09:29 01:35:24-04:00
+File Permissions                : -rw-------
+File Type                       : JPEG
+File Type Extension             : jpg
+MIME Type                       : image/jpeg
+JFIF Version                    : 1.01
+Resolution Unit                 : None
+X Resolution                    : 1
+Y Resolution                    : 1
+Comment                         : c3RlZ2hpZGU6Y0VGNmVuZHZjbVE9
+Image Width                     : 640
+Image Height                    : 640
+Encoding Process                : Baseline DCT, Huffman coding
+Bits Per Sample                 : 8
+Color Components                : 3
+Y Cb Cr Sub Sampling            : YCbCr4:2:0 (2 2)
+Image Size                      : 640x640
+Megapixels                      : 0.410
+       
+
+# If we look at comment there is some base64 content looks like clue
+# Copy this base64 string c3RlZ2hpZGU6Y0VGNmVuZHZjbVE9
+# passte into the https://gchq.github.io/CyberChef/ input section
+# click the magic wand option inside output section below or from the left side navbar drag the base64 decode into the recipe section and you will the get this string
+# steghide:cEF6endvcmQ=
+
+# Lets decode the steghide string to get password to see the content of .jpg file meta data
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Hidden in plainsight]
+└─$ echo 'cEF6endvcmQ=' | base64 -d
+pAzzword                                                                                                                                                                         
+                                                                                                                                                                                 
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Hidden in plainsight]
+└─$ steghide info img.jpg
+"img.jpg":
+  format: jpeg
+  capacity: 4.0 KB
+Try to get information about embedded data ? (y/n) y
+Enter passphrase: 
+  embedded file "flag.txt":
+    size: 34.0 Byte
+    encrypted: rijndael-128, cbc
+    compressed: yes
+                                                                                                                                                                                 
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Hidden in plainsight]
+└─$ steghide extract -sf img.jpg -p 'pAzzword'
+wrote extracted data to "flag.txt".
+                                                                                                                                                                                 
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Hidden in plainsight]
+└─$ ls
+flag.txt  img.jpg  solution.txt
+                                                                                                                                                                                 
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Hidden in plainsight]
+└─$ cat flag.txt                                      
+academy{h1dd3n_1n_1m4g3_71ae1957}

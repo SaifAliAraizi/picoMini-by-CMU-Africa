@@ -1,0 +1,25 @@
+DISKO 1
+Forensics
+Easy
+by Darkraicg492
+Can you find the flag in this disk image?
+
+Download the disk image here
+.
+
+Solution:
+
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/DISKO 1]
+└─$ ls
+disko-1.dd.gz  solution.txt
+                                                                                                                                                                                 
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/DISKO 1]
+└─$ gunzip disko-1.dd.gz              
+                                                                                                                                                                                 
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/DISKO 1]
+└─$ ls                       
+disko-1.dd  solution.txt
+                                                                                                                                                                  
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/DISKO 1]
+└─$ strings disko-1.dd | grep -i "academy"
+academy{1t5_ju5t_4_5tr1n9_3f20e35d}

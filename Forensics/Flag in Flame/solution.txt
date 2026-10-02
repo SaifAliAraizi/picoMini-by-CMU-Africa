@@ -1,0 +1,40 @@
+Flag in Flame
+Forensics
+Easy
+by Prince Niyonshuti N.
+·
+picoMini by CMU-Africa
+The SOC team discovered a suspiciously large log file after a recent breach. When they opened it, they found an enormous block of encoded text instead of typical logs. Could there be something hidden within? Your mission is to inspect the resulting file and reveal the real purpose of it. The team is relying on your skills to uncover any concealed information within this unusual log. Download the encoded data here: Logs Data
+. Be prepared—the file is large, and examining it thoroughly is crucial .
+
+Solution:
+
+                                                                                                                                                                                 
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Flag in Flame]
+└─$ ls
+logs.txt  solution.txt
+                                                                                                                                                                                 
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Flag in Flame]
+└─$ file logs.txt 
+logs.txt: ASCII text, with very long lines (65536), with no line terminators
+                                                                                                                                                                                 
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Flag in Flame]
+└─$ base64 -d logs.txt > image.png
+                                                                                                                                                                                 
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Flag in Flame]
+└─$ ls
+image.png  logs.txt  solution.txt
+                                                                                                                                                                                 
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Flag in Flame]
+└─$ file image.png
+image.png: PNG image data, 896 x 1152, 8-bit/color RGB, non-interlaced
+                                                                                                                                                                                 
+┌──(kali㉿kali)-[~/Desktop/picoMini by CMU-Africa/Forensics/Flag in Flame]
+└─$ xdg-open image.png
+
+Inside the image you can see there is some hexadecimal text showing: 61636164656D797B666F72656E736963735F616E616C797369735F69735F616D617A696E675F61626531643662617D
+
+Copy this hex text and paste into the https://gchq.github.io/CyberChef/ input section
+click on magic wand button inside Output section or simply drag hex decode into the recipe section from the left side bar, and you will get the flag.
+Flag:
+academy{forensics_analysis_is_amazing_abe1d6ba}
